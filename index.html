@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido</title>
+
+    <style>
+        body {
+            background-color: #f3f4f6; /* Cinza claro semelhante ao usado aqui */
+            margin: 0;
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */
+            height: 100vh; /* Faz o corpo ocupar toda a altura da janela */
+            overflow: hidden; /* Evita barras de rolagem */
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+        .painel {
+            background-color: #f3f4f6; /* Mesma cor do fundo para ficar invisível */
+            width: 500px;
+            height: 500px;
+            text-align: center;
+            border-radius: 20px;
+        }
+        h1 {
+            color: #374151; /* Cinza escuro para contraste */
+        }
+        #sim, #nao {
+            height: 50px; /* Aumentado */
+            width: 80px; /* Aumentado */
+            font-size: 16px; /* Texto maior */
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            margin: 10px; /* Espaçamento entre os botões */
+            transition: transform 0.2s ease; /* Suaviza a transição do efeito */
+        }
+        #sim {
+            background-color: #10b981; /* Verde claro */
+            color: white;
+        }
+        #sim:active {
+            transform: scale(0.95); /* Efeito de "pressionar" ao clicar */
+        }
+        #nao {
+            position: absolute;
+            background-color: #ef4444; /* Vermelho claro */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="painel">
+        <h1>Oi linda, quer ficar comigo?</h1>
+        <a href="https://www.youtube.com/watch?v=lxxuPGzTob4&t=48s">
+            <button id="sim">Sim</button>
+        </a>
+        <button onmouseover="fuja()" id="nao">Não</button>
+    </div>
+
+    <script>
+        function fuja() {
+            var botaoNao = document.getElementById("nao");
+
+            var larguraJanela = window.innerWidth;
+            var alturaJanela = window.innerHeight;
+
+            var maxLargura = larguraJanela - botaoNao.offsetWidth;
+            var maxAltura = alturaJanela - botaoNao.offsetHeight;
+
+            var aleatorioLargura = Math.floor(Math.random() * maxLargura);
+            var aleatorioAltura = Math.floor(Math.random() * maxAltura);
+
+            botaoNao.style.left = aleatorioLargura + "px";
+            botaoNao.style.top = aleatorioAltura + "px";
+        }
+    </script>
+</body>
+</html>
