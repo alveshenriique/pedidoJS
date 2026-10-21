@@ -69,7 +69,7 @@
             transition: left .3s ease, top .3s ease, transform .15s ease;
         }
 
-        /* ===== TELA 2: festa brega antes do redirect ===== */
+        /* ===== TELA 2: festa brega ===== */
         #festa {
             display: none;
             position: fixed;
@@ -80,12 +80,15 @@
             z-index: 10;
             align-items: center;
             justify-content: center;
+            padding: 24px;
+            text-align: center;
         }
         #festa.ativa { display: flex; }
         #festa h1 {
             color: #fff;
-            font-size: clamp(40px, 12vw, 110px);
+            font-size: clamp(40px, 10vw, 110px);
             margin: 0;
+            line-height: 1.15;
             text-shadow: 0 0 20px #fff, 4px 4px 0 #c2185b;
             animation: pisca .4s step-start infinite;
             z-index: 12;
@@ -96,16 +99,16 @@
             z-index: 11;
             pointer-events: none;
         }
-        .balao {
+        .sobe, .desce {
             position: fixed;
-            bottom: -80px;
-            font-size: 48px;
-            animation: sobe linear forwards;
-            z-index: 12;
             pointer-events: none;
+            z-index: 12;
         }
+        .sobe  { bottom: -80px; animation: sobe linear forwards; }
+        .desce { top: -80px;    animation: desce linear forwards; }
 
         @keyframes sobe  { to { transform: translateY(-120vh) rotate(20deg); } }
+        @keyframes desce { to { transform: translateY(120vh) rotate(-20deg); } }
         @keyframes disco { to { background-position: 400% 0; } }
         @keyframes pisca { 50% { opacity: .3; } }
     </style>
@@ -121,18 +124,20 @@
 
     <div id="festa">
         <canvas id="fogos"></canvas>
-        <h1>🎉🎈 EU SABIA!!! 💖🥳🎊</h1>
+        <h1>💖<br>EU SABIA!!!<br>💖</h1>
     </div>
+
+    <!-- A música precisa estar na mesma pasta que este arquivo -->
+    <audio id="musica" src="musica.mp3" preload="auto"></audio>
 
     <script>
         const sim = document.getElementById("sim");
         const nao = document.getElementById("nao");
         const painel = document.querySelector(".painel");
         const festa = document.getElementById("festa");
+        const musica = document.getElementById("musica");
 
-        // Música começando em 0:24
-        const LINK = "https://www.youtube.com/watch?v=tbJNhH9EVcg&t=24s";
-        const TEMPO_FESTA = 4000; // ms antes de redirecionar
+        const INICIO_MUSICA = 24; // segundos
 
         /* ---------- Botão Não que foge ---------- */
         function fuja() {
@@ -174,27 +179,35 @@
         }, { passive: false });
         nao.addEventListener("click", fuja);
 
-        /* ---------- Botão Sim: festa e redirect ---------- */
+        /* ---------- Botão Sim: música + festa ---------- */
         sim.addEventListener("click", () => {
+            tocarMusica(); // precisa ser dentro do clique pra liberar o som no celular
+
             painel.style.display = "none";
             nao.remove();
             festa.classList.add("ativa");
-            baloes();
+            emojis();
             fogos();
-            setTimeout(() => { window.location.href = LINK; }, TEMPO_FESTA);
         });
 
-        function baloes() {
-            const emojis = ["🎈", "🎈", "🎈", "🎉", "💖", "🥳"];
+        function tocarMusica() {
+            const pular = () => { if (musica.currentTime < INICIO_MUSICA) musica.currentTime = INICIO_MUSICA; };
+            if (musica.readyState >= 1) pular();
+            else musica.addEventListener("loadedmetadata", pular, { once: true });
+            musica.play().catch(() => {});
+        }
+
+        function emojis() {
+            const lista = ["❤️", "💖", "💕", "💘", "💗", "😍", "🥰", "😘", "😻"];
             setInterval(() => {
-                const b = document.createElement("div");
-                b.className = "balao";
-                b.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                b.style.left = Math.random() * 95 + "vw";
-                b.style.fontSize = (32 + Math.random() * 40) + "px";
-                b.style.animationDuration = (2 + Math.random() * 2) + "s";
-                document.body.appendChild(b);
-                setTimeout(() => b.remove(), 4500);
+                const e = document.createElement("div");
+                e.className = Math.random() < 0.6 ? "sobe" : "desce";
+                e.textContent = lista[Math.floor(Math.random() * lista.length)];
+                e.style.left = Math.random() * 95 + "vw";
+                e.style.fontSize = (32 + Math.random() * 40) + "px";
+                e.style.animationDuration = (2 + Math.random() * 2) + "s";
+                document.body.appendChild(e);
+                setTimeout(() => e.remove(), 4500);
             }, 80);
         }
 
